@@ -16,7 +16,7 @@ p2.files = ["bin/pkg2",
 for p in p1, p2:
     self.addpkg2db("local", p)
 
-self.args = "-R %s" % p1.name
+self.args = f"-R {p1.name}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("!PKG_EXIST=pkg1")

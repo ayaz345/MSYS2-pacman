@@ -33,13 +33,11 @@ class pmfile(object):
         if dir_path and not os.path.isdir(dir_path):
             os.makedirs(dir_path, 0o755)
 
-        fd = open(path, "w")
-        if self.content:
-            fd.write(self.content)
-            if self.content[-1] != "\n":
-                fd.write("\n")
-        fd.close()
-
+        with open(path, "w") as fd:
+            if self.content:
+                fd.write(self.content)
+                if self.content[-1] != "\n":
+                    fd.write("\n")
         os.chmod(path, self.mode)
 
         return path
@@ -74,11 +72,10 @@ class snapshot(object):
         util.vprint("\t\told: %s / %s" % (self.checksum, self.mtime))
         util.vprint("\t\tnew: %s / %s" % (checksum, mtime))
 
-        if self.checksum != checksum \
-                or self.mtime[0] != mtime[0] \
-                or self.mtime[1] != mtime[1]:
-            return True
-
-        return False
+        return (
+            self.checksum != checksum
+            or self.mtime[0] != mtime[0]
+            or self.mtime[1] != mtime[1]
+        )
 
 # vim: set ts=4 sw=4 et:

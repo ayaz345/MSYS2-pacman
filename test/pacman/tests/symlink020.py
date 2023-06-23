@@ -13,7 +13,7 @@ sp = pmpkg("pkg1", "1.0-2")
 sp.files = ["lib/bar"]
 self.addpkg2db("sync", sp)
 
-self.args = "-S %s" % sp.name
+self.args = f"-S {sp.name}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("FILE_TYPE=lib|dir")

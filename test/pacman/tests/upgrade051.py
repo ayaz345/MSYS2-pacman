@@ -8,7 +8,7 @@ p.conflicts = ["pkg1"]
 p.provides = ["pkg1"]
 self.addpkg(p)
 
-self.args = "-U %s --ask=4" % p.filename()
+self.args = f"-U {p.filename()} --ask=4"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("!PKG_EXIST=pkg1")

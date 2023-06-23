@@ -9,9 +9,9 @@ self.addpkg(p)
 p2 = pmpkg("dep2")
 self.addpkg(p2)
 
-self.args = "-U %s %s" % (p.filename(), p2.filename())
+self.args = f"-U {p.filename()} {p2.filename()}"
 
 self.addrule("PACMAN_RETCODE=1")
 self.addrule("!PKG_EXIST=dummy")
 for f in p.files:
-	self.addrule("!FILE_EXIST=%s" % f)
+	self.addrule(f"!FILE_EXIST={f}")

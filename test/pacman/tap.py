@@ -34,10 +34,10 @@ def plan(count):
     _output("1..%d" % (count))
 
 def diag(msg):
-    _output("# %s" % (msg))
+    _output(f"# {msg}")
 
 def bail(reason=""):
-    _output("Bail out! %s" % (reason))
+    _output(f"Bail out! {reason}")
 
 def subtest(func, description=""):
     global todo, count, level, failed

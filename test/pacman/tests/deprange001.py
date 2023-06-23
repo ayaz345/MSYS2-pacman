@@ -12,7 +12,7 @@ p = pmpkg("pkg3")
 p.depends = ["dependency>=3", "dependency<=4"]
 self.addpkg(p)
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 self.addrule("PACMAN_RETCODE=1")
 self.addrule("!PKG_EXIST=pkg3")
 

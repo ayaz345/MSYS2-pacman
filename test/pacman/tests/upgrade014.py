@@ -13,11 +13,11 @@ p2.files = ["bin/foobar",
 for p in p1, p2:
 	self.addpkg(p)
 
-self.args = "-U --force %s" % " ".join([p.filename() for p in (p1, p2)])
+self.args = f'-U --force {" ".join([p.filename() for p in (p1, p2)])}'
 
 self.addrule("PACMAN_RETCODE=0")
 for p in p1, p2:
-	self.addrule("PKG_EXIST=%s" % p.name)
-	self.addrule("PKG_FILES=%s|usr/common" % p.name)
+	self.addrule(f"PKG_EXIST={p.name}")
+	self.addrule(f"PKG_FILES={p.name}|usr/common")
 	for f in p.files:
-		self.addrule("FILE_EXIST=%s" % f)
+		self.addrule(f"FILE_EXIST={f}")

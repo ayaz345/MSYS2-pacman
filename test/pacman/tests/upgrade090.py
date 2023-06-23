@@ -16,13 +16,13 @@ sp = pmpkg("dep")
 sp.files = ["bin/dep"]
 self.addpkg2db("sync", sp)
 
-self.args = "-U %s --ask=16" % " ".join([p.filename() for p in (p1, p2, p3)])
+self.args = f'-U {" ".join([p.filename() for p in (p1, p2, p3)])} --ask=16'
 
 self.addrule("PACMAN_RETCODE=0")
 for p in p1, p2, sp:
-	self.addrule("PKG_EXIST=%s" % p.name)
+	self.addrule(f"PKG_EXIST={p.name}")
 	for f in p.files:
-		self.addrule("FILE_EXIST=%s" % f)
+		self.addrule(f"FILE_EXIST={f}")
 self.addrule("PKG_VERSION=pkg1|1.0-2")
 self.addrule("PKG_VERSION=pkg2|1.0-2")
 self.addrule("!PKG_EXIST=pkg3")

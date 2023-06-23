@@ -7,7 +7,7 @@ p.files = ["foo/file1",
            "foo/symdir -> dir"]
 self.addpkg(p)
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("FILE_TYPE=foo/|dir")

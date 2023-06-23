@@ -7,7 +7,7 @@ self.addpkg2db("local", pkg)
 dep = pmpkg("dep")
 self.addpkg2db("local", dep)
 
-self.args = "-Qi %s" % dep.name
+self.args = f"-Qi {dep.name}"
 
 self.addrule("PACMAN_RETCODE=0")
-self.addrule("PACMAN_OUTPUT=^Optional For.*%s" % pkg.name)
+self.addrule(f"PACMAN_OUTPUT=^Optional For.*{pkg.name}")

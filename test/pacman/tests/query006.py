@@ -15,11 +15,11 @@ p.installdate = "10000000000"
 
 self.addpkg2db("local", p)
 
-self.args = "-Qi %s" % p.name
+self.args = f"-Qi {p.name}"
 
 self.addrule("PACMAN_RETCODE=0")
-self.addrule("PACMAN_OUTPUT=^Name.*%s" % p.name)
-self.addrule("PACMAN_OUTPUT=^Description.*%s" % p.desc)
+self.addrule(f"PACMAN_OUTPUT=^Name.*{p.name}")
+self.addrule(f"PACMAN_OUTPUT=^Description.*{p.desc}")
 self.addrule("PACMAN_OUTPUT=^Installed Size.*9.31 GiB")
 self.addrule("PACMAN_OUTPUT=^Build Date.* 2065")
 self.addrule("PACMAN_OUTPUT=^Install Date.* 2286")

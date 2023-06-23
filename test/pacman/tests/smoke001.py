@@ -11,7 +11,7 @@ for i in range(1000):
 	self.addpkg(p)
 
 pkglist = [p.filename() for p in self.localpkgs]
-self.args = "-U %s" % " ".join(pkglist)
+self.args = f'-U {" ".join(pkglist)}'
 
 self.addrule("PACMAN_RETCODE=0")
 #for i in range(1000):

@@ -9,7 +9,7 @@ lp2.reason = 1
 self.addpkg2db("local", lp2)
 
 
-self.args = "-Rs %s" % lp1.name
+self.args = f"-Rs {lp1.name}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("!PKG_EXIST=pkg1")

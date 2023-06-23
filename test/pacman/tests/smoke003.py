@@ -6,7 +6,7 @@ for i in range(1000):
 	self.addpkg2db("local", p)
 
 pkglist = ["pkg%03dname" % i for i in range(100, 1000)]
-self.args = "-R %s" % " ".join(pkglist)
+self.args = f'-R {" ".join(pkglist)}'
 
 self.addrule("PACMAN_RETCODE=0")
 # picked random packages to test for, since a loop is too much to handle

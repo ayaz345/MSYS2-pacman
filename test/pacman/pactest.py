@@ -115,7 +115,7 @@ if __name__ == "__main__":
     if not opts.keeproot:
         shutil.rmtree(root_path)
     else:
-        tap.diag("pacman testing root saved: %s" % root_path)
+        tap.diag(f"pacman testing root saved: {root_path}")
 
     if env.failed > 0:
         sys.exit(1)

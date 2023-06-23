@@ -7,7 +7,7 @@ self.addpkg2db("sync", sp)
 
 self.option["NoExtract"] = ["usr/man/man1/dummy.1"]
 
-self.args = "-S %s" % sp.name
+self.args = f"-S {sp.name}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_EXIST=dummy")

@@ -33,7 +33,7 @@ p2 = pmpkg("bar")
 p2.files = ["file/bar"]
 self.addpkg(p2)
 
-self.args = "-U %s %s" % (p1.filename(), p2.filename())
+self.args = f"-U {p1.filename()} {p2.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_EXIST=foo")

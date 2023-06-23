@@ -17,7 +17,7 @@ sp2.files = ["usr/include/bar/",
 self.addpkg2db("sync", sp2)
 
 
-self.args = "-S %s %s" % (sp1.name, sp2.name)
+self.args = f"-S {sp1.name} {sp2.name}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("FILE_TYPE=usr/include/foo|dir")

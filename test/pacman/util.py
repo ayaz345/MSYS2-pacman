@@ -103,18 +103,17 @@ def mkfile(base, name, data=""):
 def writedata(filename, data):
     if isinstance(data, list):
         data = "\n".join(data)
-    fd = open(filename, "w")
-    if data:
-        fd.write(data)
-        if data[-1] != "\n":
-            fd.write("\n")
-    fd.close()
+    with open(filename, "w") as fd:
+        if data:
+            fd.write(data)
+            if data[-1] != "\n":
+                fd.write("\n")
 
 def mkcfgfile(filename, root, option, db):
     # Options
     data = ["[options]"]
     for key, value in option.items():
-        data.extend(["%s = %s" % (key, j) for j in value])
+        data.extend([f"{key} = {j}" for j in value])
 
     # Repositories
     # sort by repo name so tests can predict repo order, rather than be
@@ -128,7 +127,7 @@ def mkcfgfile(filename, root, option, db):
                      % (value.treename, value.getverify(), \
                         os.path.join(root, SYNCREPO, value.treename)))
             for optkey, optval in value.option.items():
-                data.extend(["%s = %s" % (optkey, j) for j in optval])
+                data.extend([f"{optkey} = {j}" for j in optval])
 
     mkfile(root, filename, "\n".join(data))
 
@@ -140,14 +139,13 @@ def mkcfgfile(filename, root, option, db):
 def getmd5sum(filename):
     if not os.path.isfile(filename):
         return ""
-    fd = open(filename, "rb")
-    checksum = hashlib.md5()
-    while 1:
-        block = fd.read(32 * 1024)
-        if not block:
-            break
-        checksum.update(block)
-    fd.close()
+    with open(filename, "rb") as fd:
+        checksum = hashlib.md5()
+        while 1:
+            if block := fd.read(32 * 1024):
+                checksum.update(block)
+            else:
+                break
     return checksum.hexdigest()
 
 def mkmd5sum(data):
@@ -171,19 +169,18 @@ def which(filename, path=None):
 
 def grep(filename, pattern):
     pat = re.compile(pattern)
-    myfile = open(filename, 'r')
-    for line in myfile:
-        if pat.search(line):
-            myfile.close()
-            return True
-    myfile.close()
+    with open(filename, 'r') as myfile:
+        for line in myfile:
+            if pat.search(line):
+                myfile.close()
+                return True
     return False
 
 def mkdir(path):
     if os.path.isdir(path):
         return
     elif os.path.isfile(path):
-        raise OSError("'%s' already exists and is not a directory" % path)
+        raise OSError(f"'{path}' already exists and is not a directory")
     os.makedirs(path, 0o755)
 
 # vim: set ts=4 sw=4 et:

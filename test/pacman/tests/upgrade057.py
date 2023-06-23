@@ -12,7 +12,7 @@ p = pmpkg("pkg2", "1.0-2")
 p.provides = ["imag3"]
 self.addpkg(p)
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_EXIST=pkg1")

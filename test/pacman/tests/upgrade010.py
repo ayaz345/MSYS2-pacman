@@ -10,7 +10,7 @@ self.addpkg(p)
 
 self.option["NoUpgrade"] = ["etc/dummy.conf"]
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PKG_VERSION=dummy|1.0-2")
 self.addrule("!FILE_MODIFIED=etc/dummy.conf")

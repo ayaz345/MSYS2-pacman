@@ -26,26 +26,26 @@ names = ["Märchen", "ƏƐƕƺ", "предупреждение", "סֶאבױ",
 
 p2 = pmpkg("unicodechars")
 # somewhat derived from FS#9906
-p2.files = ["usr/share/%s" % name for name in names]
+p2.files = [f"usr/share/{name}" for name in names]
 self.addpkg2db("local", p2)
 
 sp2 = pmpkg("unicodechars", "2.0-1")
-sp2.files = ["usr/man/%s" % name for name in names]
+sp2.files = [f"usr/man/{name}" for name in names]
 self.addpkg2db("sync", sp2)
 
-self.args = "-S %s %s" % (sp1.name, sp2.name)
+self.args = f"-S {sp1.name} {sp2.name}"
 
 self.addrule("PACMAN_RETCODE=0")
-self.addrule("PKG_VERSION=%s|%s" % (sp1.name, sp1.version))
-self.addrule("PKG_VERSION=%s|%s" % (sp2.name, sp2.version))
+self.addrule(f"PKG_VERSION={sp1.name}|{sp1.version}")
+self.addrule(f"PKG_VERSION={sp2.name}|{sp2.version}")
 
 for f in self.filesystem:
-    self.addrule("FILE_EXIST=%s" % f)
+    self.addrule(f"FILE_EXIST={f}")
 self.addrule("FILE_EXIST=usr/bin/endwithspace ")
 self.addrule("FILE_EXIST= spaces/name")
 self.addrule("FILE_EXIST= spaces/name2")
 self.addrule("!FILE_EXIST=usr/bin/disappear ")
 for f in p2.files:
-    self.addrule("!FILE_EXIST=%s" % f)
+    self.addrule(f"!FILE_EXIST={f}")
 for f in sp2.files:
-    self.addrule("FILE_EXIST=%s" % f)
+    self.addrule(f"FILE_EXIST={f}")

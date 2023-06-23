@@ -10,7 +10,7 @@ self.addpkg2db("local", lp2)
 p = pmpkg("pkg2", "1.0-1")
 self.addpkg(p)
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=1")
 self.addrule("PKG_EXIST=pkg1")

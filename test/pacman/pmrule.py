@@ -34,9 +34,7 @@ class pmrule(object):
 
     def snapshots_needed(self):
         (testname, args) = self.rule.split("=")
-        if testname == "FILE_MODIFIED" or testname == "!FILE_MODIFIED":
-            return [args]
-        return []
+        return [args] if testname in ["FILE_MODIFIED", "!FILE_MODIFIED"] else []
 
     def check(self, test):
         """
@@ -48,11 +46,7 @@ class pmrule(object):
             self.false = 1
             testname = testname[1:]
         [kind, case] = testname.split("_")
-        if "|" in args:
-            [key, value] = args.split("|", 1)
-        else:
-            [key, value] = [args, None]
-
+        [key, value] = args.split("|", 1) if "|" in args else [args, None]
         if kind == "PACMAN":
             if case == "RETCODE":
                 if test.retcode != int(key):
@@ -65,14 +59,11 @@ class pmrule(object):
                 elif not util.grep(logfile, key):
                     success = 0
             else:
-                tap.diag("PACMAN rule '%s' not found" % case)
+                tap.diag(f"PACMAN rule '{case}' not found")
                 success = -1
         elif kind == "PKG":
             localdb = test.db["local"]
-            newpkg = localdb.db_read(key)
-            if not newpkg:
-                success = 0
-            else:
+            if newpkg := localdb.db_read(key):
                 if case == "EXIST":
                     success = 1
                 elif case == "VERSION":
@@ -82,43 +73,43 @@ class pmrule(object):
                     if value != newpkg.desc:
                         success = 0
                 elif case == "GROUPS":
-                    if not value in newpkg.groups:
+                    if value not in newpkg.groups:
                         success = 0
                 elif case == "PROVIDES":
-                    if not value in newpkg.provides:
+                    if value not in newpkg.provides:
                         success = 0
                 elif case == "DEPENDS":
-                    if not value in newpkg.depends:
+                    if value not in newpkg.depends:
                         success = 0
                 elif case == "OPTDEPENDS":
-                    success = 0
-                    for optdep in newpkg.optdepends:
-                        if value == optdep.split(':', 1)[0]:
-                            success = 1
-                            break
+                    success = next(
+                        (
+                            1
+                            for optdep in newpkg.optdepends
+                            if value == optdep.split(':', 1)[0]
+                        ),
+                        0,
+                    )
                 elif case == "REASON":
                     if newpkg.reason != int(value):
                         success = 0
                 elif case == "FILES":
-                    if not value in newpkg.files:
+                    if value not in newpkg.files:
                         success = 0
                 elif case == "BACKUP":
-                    success = 0
-                    for f in newpkg.backup:
-                        if f.startswith(value + "\t"):
-                            success = 1
-                            break;
+                    success = next((1 for f in newpkg.backup if f.startswith(value + "\t")), 0)
                 else:
-                    tap.diag("PKG rule '%s' not found" % case)
+                    tap.diag(f"PKG rule '{case}' not found")
                     success = -1
+            else:
+                success = 0
         elif kind == "FILE":
             filename = os.path.join(test.root, key)
             if case == "EXIST":
                 if not os.path.isfile(filename):
                     success = 0
             elif case == "EMPTY":
-                if not (os.path.isfile(filename)
-                        and os.path.getsize(filename) == 0):
+                if not os.path.isfile(filename) or os.path.getsize(filename) != 0:
                     success = 0
             elif case == "CONTENTS":
                 try:
@@ -150,13 +141,13 @@ class pmrule(object):
                     if not os.path.islink(filename):
                         success = 0
             elif case == "PACNEW":
-                if not os.path.isfile("%s.pacnew" % filename):
+                if not os.path.isfile(f"{filename}.pacnew"):
                     success = 0
             elif case == "PACSAVE":
-                if not os.path.isfile("%s.pacsave" % filename):
+                if not os.path.isfile(f"{filename}.pacsave"):
                     success = 0
             else:
-                tap.diag("FILE rule '%s' not found" % case)
+                tap.diag(f"FILE rule '{case}' not found")
                 success = -1
         elif kind == "DIR":
             filename = os.path.join(test.root, key)
@@ -164,7 +155,7 @@ class pmrule(object):
                 if not os.path.isdir(filename):
                     success = 0
             else:
-                tap.diag("DIR rule '%s' not found" % case)
+                tap.diag(f"DIR rule '{case}' not found")
                 success = -1
         elif kind == "LINK":
             filename = os.path.join(test.root, key)
@@ -172,7 +163,7 @@ class pmrule(object):
                 if not os.path.islink(filename):
                     success = 0
             else:
-                tap.diag("LINK rule '%s' not found" % case)
+                tap.diag(f"LINK rule '{case}' not found")
                 success = -1
         elif kind == "CACHE":
             cachedir = os.path.join(test.root, util.PM_CACHEDIR)
@@ -182,7 +173,7 @@ class pmrule(object):
                         os.path.join(cachedir, pkg.filename())):
                     success = 0
         else:
-            tap.diag("Rule kind '%s' not found" % kind)
+            tap.diag(f"Rule kind '{kind}' not found")
             success = -1
 
         if self.false and success != -1:

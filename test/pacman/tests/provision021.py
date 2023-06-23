@@ -8,7 +8,7 @@ lp = pmpkg("pkg2", "1.0-2")
 lp.provides = ["provision=1.0-2"]
 self.addpkg2db("local", lp)
 
-self.args = "-S %s" % p.name
+self.args = f"-S {p.name}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_EXIST=pkg1")

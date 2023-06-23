@@ -5,8 +5,8 @@ p.files = ["bin/foo",
            "bin/bar"]
 self.addpkg(p)
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 for f in p.files:
-	self.addrule("FILE_MODE=%s|644" % f)
+	self.addrule(f"FILE_MODE={f}|644")

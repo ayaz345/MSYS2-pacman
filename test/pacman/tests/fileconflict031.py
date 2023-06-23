@@ -9,7 +9,7 @@ sp1.conflicts = ["foo"]
 sp1.files = ["foo"]
 self.addpkg2db("sync", sp1)
 
-self.args = "-S %s" % sp1.name
+self.args = f"-S {sp1.name}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_VERSION=foo|2-1")

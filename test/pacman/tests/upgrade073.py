@@ -15,13 +15,13 @@ p3.files = ["bin/dep2"]
 for p in p1, p2, p3:
 	self.addpkg(p)
 
-self.args = "-U %s" % " ".join([p.filename() for p in (p1, p2, p3)])
+self.args = f'-U {" ".join([p.filename() for p in (p1, p2, p3)])}'
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_VERSION=dummy|1.0-2")
 self.addrule("PKG_DEPENDS=dummy|dep1")
 self.addrule("PKG_DEPENDS=dep1|dep2")
 for p in p1, p2, p3:
-	self.addrule("PKG_EXIST=%s" % p.name)
+	self.addrule(f"PKG_EXIST={p.name}")
 	for f in p.files:
-		self.addrule("FILE_EXIST=%s" % f)
+		self.addrule(f"FILE_EXIST={f}")

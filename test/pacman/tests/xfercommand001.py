@@ -8,13 +8,13 @@ self.option['XferCommand'] = ['/usr/bin/curl %u > %o']
 numpkgs = 10
 pkgnames = []
 for i in range(numpkgs):
-    name = "pkg_%s" % i
+    name = f"pkg_{i}"
     pkgnames.append(name)
     p = pmpkg(name)
-    p.files = ["usr/bin/foo-%s" % i]
+    p.files = [f"usr/bin/foo-{i}"]
     self.addpkg2db("sync", p)
 
-self.args = "-S %s" % ' '.join(pkgnames)
+self.args = f"-S {' '.join(pkgnames)}"
 
 for name in pkgnames:
-    self.addrule("PKG_EXIST=%s" % name)
+    self.addrule(f"PKG_EXIST={name}")

@@ -12,8 +12,8 @@ sp3.groups = ["grp"]
 for p in sp1, sp2, sp3:
 	self.addpkg2db("sync", p);
 
-self.args = "-S %s" % "grp"
+self.args = '-S grp'
 
 self.addrule("PACMAN_RETCODE=0")
 for p in sp1, sp2, sp3:
-	self.addrule("PKG_EXIST=%s" % p.name)
+	self.addrule(f"PKG_EXIST={p.name}")

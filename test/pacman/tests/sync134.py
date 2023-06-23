@@ -18,4 +18,4 @@ self.args = "-Su"
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("!PKG_EXIST=pkg1")
 for p in sp1, sp2:
-	self.addrule("PKG_EXIST=%s" % p.name)
+	self.addrule(f"PKG_EXIST={p.name}")

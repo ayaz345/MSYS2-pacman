@@ -18,7 +18,7 @@ lp3.depends = ["pkg3"]
 lp3.install['pre_remove'] = "[ -f pkg3file ] && echo '' > pkg4ok"
 self.addpkg2db("local", lp3);
 
-self.args = "-S %s --ask=4" % sp.name
+self.args = f"-S {sp.name} --ask=4"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_EXIST=pkg1")

@@ -6,7 +6,7 @@ sp.files = ["bin/dummy",
             "usr/man/man1/dummy.1"]
 self.addpkg2db("sync", sp)
 
-self.args = "-Ss %s" % sp.name
+self.args = f"-Ss {sp.name}"
 
 self.addrule("PACMAN_RETCODE=0")
-self.addrule("PACMAN_OUTPUT=^sync/%s" % sp.name)
+self.addrule(f"PACMAN_OUTPUT=^sync/{sp.name}")

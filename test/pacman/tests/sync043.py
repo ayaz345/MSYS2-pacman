@@ -10,7 +10,7 @@ self.addpkg2db("local", lp1);
 lp2 = pmpkg("pkg3")
 self.addpkg2db("local", lp2);
 
-self.args = "-S %s --ask=4" % sp.name
+self.args = f"-S {sp.name} --ask=4"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_EXIST=pkg1")

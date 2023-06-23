@@ -10,7 +10,7 @@ self.addpkg(p)
 
 self.option["NoUpgrade"] = ["foo/*", "!foo/bar", "!foo/baz"]
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PKG_VERSION=foobar|1.0-2")
 self.addrule("!FILE_EXIST=foo/baz")

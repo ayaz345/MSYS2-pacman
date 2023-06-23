@@ -8,7 +8,7 @@ self.addpkg2db("local", lp)
 p = pmpkg("dummy", "1.0-2")
 self.addpkg(p)
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_VERSION=dummy|1.0-2")

@@ -52,7 +52,7 @@ class pmtest(object):
                "root = %s" % (self.name, self.testname, self.root)
 
     def addpkg2db(self, treename, pkg):
-        if not treename in self.db:
+        if treename not in self.db:
             self.db[treename] = pmdb.pmdb(treename, self.root)
         self.db[treename].pkgs.append(pkg)
 
@@ -69,11 +69,14 @@ class pmtest(object):
             pkg = db.getpkg(name)
             if pkg and pkg.version == version:
                 return pkg
-        for pkg in self.localpkgs:
-            if pkg.name == name and pkg.version == version:
-                return pkg
-
-        return None
+        return next(
+            (
+                pkg
+                for pkg in self.localpkgs
+                if pkg.name == name and pkg.version == version
+            ),
+            None,
+        )
 
     def addrule(self, rulename):
         rule = pmrule.pmrule(rulename)
@@ -102,13 +105,12 @@ class pmtest(object):
         self.files = []
         self.expectfailure = False
 
-        if os.path.isfile(self.name):
-            # all tests expect this to be available
-            from pmpkg import pmpkg
-            with open(self.name) as input:
-                exec(input.read(),locals())
-        else:
-            raise IOError("file %s does not exist!" % self.name)
+        if not os.path.isfile(self.name):
+            raise IOError(f"file {self.name} does not exist!")
+        # all tests expect this to be available
+        from pmpkg import pmpkg
+        with open(self.name) as input:
+            exec(input.read(),locals())
 
     def generate(self, pacman):
         tap.diag("==> Generating test environment")
@@ -197,7 +199,7 @@ class pmtest(object):
 
     def add_hook(self, name, content):
         if not name.endswith(".hook"):
-            name = name + ".hook"
+            name = f"{name}.hook"
         path = os.path.join("etc/pacman.d/hooks/", name)
         self.filesystem.append(pmfile.pmfile(path, content))
 
@@ -227,13 +229,21 @@ class pmtest(object):
         if pacman["valgrind"]:
             suppfile = os.path.join(os.path.dirname(__file__),
                     '..', '..', 'valgrind.supp')
-            cmd.extend(["libtool", "execute", "valgrind", "-q",
-                "--tool=memcheck", "--leak-check=full",
-                "--show-reachable=yes",
-                "--gen-suppressions=all",
-                "--child-silent-after-fork=yes",
-                "--log-file=%s" % os.path.join(self.root, "var/log/valgrind"),
-                "--suppressions=%s" % suppfile])
+            cmd.extend(
+                [
+                    "libtool",
+                    "execute",
+                    "valgrind",
+                    "-q",
+                    "--tool=memcheck",
+                    "--leak-check=full",
+                    "--show-reachable=yes",
+                    "--gen-suppressions=all",
+                    "--child-silent-after-fork=yes",
+                    f'--log-file={os.path.join(self.root, "var/log/valgrind")}',
+                    f"--suppressions={suppfile}",
+                ]
+            )
             self.addrule("FILE_EMPTY=var/log/valgrind")
 
         # replace program name with absolute path
@@ -242,7 +252,7 @@ class pmtest(object):
             prog = util.which(self.cmd[0], pacman["bindir"])
         if not prog or not os.access(prog, os.X_OK):
             if not prog:
-                tap.bail("could not locate '%s' binary" % (self.cmd[0]))
+                tap.bail(f"could not locate '{self.cmd[0]}' binary")
                 return
 
         cmd.append(os.path.abspath(prog))
@@ -250,7 +260,7 @@ class pmtest(object):
         if pacman["manual-confirm"]:
             cmd.append("--confirm")
         if pacman["debug"]:
-            cmd.append("--debug=%s" % pacman["debug"])
+            cmd.append(f'--debug={pacman["debug"]}')
         cmd.extend(shlex.split(self.args))
 
         if not (pacman["gdb"] or pacman["nolog"]):
@@ -298,7 +308,7 @@ class pmtest(object):
         return os.path.join(self.root, util.PM_DBPATH)
 
     def rootdir(self):
-        return self.root + '/'
+        return f'{self.root}/'
 
     def cachedir(self):
         return os.path.join(self.root, util.PM_CACHEDIR)

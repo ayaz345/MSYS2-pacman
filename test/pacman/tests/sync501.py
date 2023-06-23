@@ -10,7 +10,7 @@ self.addpkg2db("local", lp)
 
 self.option["NoUpgrade"] = ["etc/dummy.conf"]
 
-self.args = "-S %s" % sp.name
+self.args = f"-S {sp.name}"
 
 self.addrule("PKG_VERSION=dummy|1.0-2")
 self.addrule("!FILE_MODIFIED=etc/dummy.conf")

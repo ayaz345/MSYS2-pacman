@@ -9,7 +9,7 @@ self.addpkg2db("sync", sp)
 lp = pmpkg("dummy", "1.0-1")
 self.addpkg2db("local", lp)
 
-self.args = "-S %s" % sp.name
+self.args = f"-S {sp.name}"
 
 self.db['syncdisabled'].option['Usage'] = ['Search']
 

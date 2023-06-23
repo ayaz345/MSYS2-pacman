@@ -5,7 +5,7 @@ p.files = ["bin/foo|755",
            "bin/bar|755"]
 self.addpkg(p)
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("FILE_MODE=bin/foo|755")

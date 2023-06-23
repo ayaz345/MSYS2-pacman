@@ -9,7 +9,7 @@ p = pmpkg("pkg1")
 p.files = ["dir/symdir/tmp"]
 self.addpkg(p)
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=1")
 self.addrule("!PKG_EXIST=pkg1")

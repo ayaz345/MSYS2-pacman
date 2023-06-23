@@ -27,10 +27,10 @@ import util
 def _getsection(fd):
     i = []
     while 1:
-        line = fd.readline().strip("\n")
-        if not line:
+        if line := fd.readline().strip("\n"):
+            i.append(line)
+        else:
             break
-        i.append(line)
     return i
 
 def make_section(data, title, values):
@@ -62,17 +62,21 @@ class pmdb(object):
             self.read_pkgcache = {}
         else:
             self.dbdir = None
-            self.dbfile = os.path.join(root, util.PM_SYNCDBPATH, treename + ".db")
+            self.dbfile = os.path.join(root, util.PM_SYNCDBPATH, f"{treename}.db")
             self.is_local = False
 
     def __str__(self):
-        return "%s" % self.treename
+        return f"{self.treename}"
 
     def getverify(self):
-        for value in ("Required", "Never", "Optional"):
-            if value in self.treename:
-                return value
-        return "Never"
+        return next(
+            (
+                value
+                for value in ("Required", "Never", "Optional")
+                if value in self.treename
+            ),
+            "Never",
+        )
 
     def getpkg(self, name):
         for pkg in self.pkgs:
@@ -99,85 +103,81 @@ class pmdb(object):
         if pkgname in self.read_pkgcache:
             return self.read_pkgcache[pkgname]
 
-        pkg = pmpkg.pmpkg(pkgname, pkgver + "-" + pkgrel)
+        pkg = pmpkg.pmpkg(pkgname, f"{pkgver}-{pkgrel}")
         self.read_pkgcache[pkgname] = pkg
 
         path = os.path.join(self.dbdir, dbentry)
         # desc
         filename = os.path.join(path, "desc")
         if not os.path.isfile(filename):
-            tap.bail("invalid db entry found (desc missing) for pkg " + pkgname)
+            tap.bail(f"invalid db entry found (desc missing) for pkg {pkgname}")
             return None
-        fd = open(filename, "r")
-        while 1:
-            line = fd.readline()
-            if not line:
-                break
-            line = line.strip("\n")
-            if line == "%DESC%":
-                pkg.desc = fd.readline().strip("\n")
-            elif line == "%GROUPS%":
-                pkg.groups = _getsection(fd)
-            elif line == "%URL%":
-                pkg.url = fd.readline().strip("\n")
-            elif line == "%LICENSE%":
-                pkg.license = _getsection(fd)
-            elif line == "%ARCH%":
-                pkg.arch = fd.readline().strip("\n")
-            elif line == "%BUILDDATE%":
-                pkg.builddate = fd.readline().strip("\n")
-            elif line == "%INSTALLDATE%":
-                pkg.installdate = fd.readline().strip("\n")
-            elif line == "%PACKAGER%":
-                pkg.packager = fd.readline().strip("\n")
-            elif line == "%REASON%":
-                try:
-                    pkg.reason = int(fd.readline().strip("\n"))
-                except ValueError:
-                    pkg.reason = -1
-                    raise
-            elif line == "%SIZE%" or line == "%CSIZE%":
-                try:
-                    pkg.size = int(fd.readline().strip("\n"))
-                except ValueError:
-                    pkg.size = -1
-                    raise
-            elif line == "%MD5SUM%":
-                pkg.md5sum = fd.readline().strip("\n")
-            elif line == "%PGPSIG%":
-                pkg.pgpsig = fd.readline().strip("\n")
-            elif line == "%REPLACES%":
-                pkg.replaces = _getsection(fd)
-            elif line == "%DEPENDS%":
-                pkg.depends = _getsection(fd)
-            elif line == "%OPTDEPENDS%":
-                pkg.optdepends = _getsection(fd)
-            elif line == "%CONFLICTS%":
-                pkg.conflicts = _getsection(fd)
-            elif line == "%PROVIDES%":
-                pkg.provides = _getsection(fd)
-        fd.close()
-
+        with open(filename, "r") as fd:
+            while 1:
+                line = fd.readline()
+                if not line:
+                    break
+                line = line.strip("\n")
+                if line == "%DESC%":
+                    pkg.desc = fd.readline().strip("\n")
+                elif line == "%GROUPS%":
+                    pkg.groups = _getsection(fd)
+                elif line == "%URL%":
+                    pkg.url = fd.readline().strip("\n")
+                elif line == "%LICENSE%":
+                    pkg.license = _getsection(fd)
+                elif line == "%ARCH%":
+                    pkg.arch = fd.readline().strip("\n")
+                elif line == "%BUILDDATE%":
+                    pkg.builddate = fd.readline().strip("\n")
+                elif line == "%INSTALLDATE%":
+                    pkg.installdate = fd.readline().strip("\n")
+                elif line == "%PACKAGER%":
+                    pkg.packager = fd.readline().strip("\n")
+                elif line == "%REASON%":
+                    try:
+                        pkg.reason = int(fd.readline().strip("\n"))
+                    except ValueError:
+                        pkg.reason = -1
+                        raise
+                elif line in ["%SIZE%", "%CSIZE%"]:
+                    try:
+                        pkg.size = int(fd.readline().strip("\n"))
+                    except ValueError:
+                        pkg.size = -1
+                        raise
+                elif line == "%MD5SUM%":
+                    pkg.md5sum = fd.readline().strip("\n")
+                elif line == "%PGPSIG%":
+                    pkg.pgpsig = fd.readline().strip("\n")
+                elif line == "%REPLACES%":
+                    pkg.replaces = _getsection(fd)
+                elif line == "%DEPENDS%":
+                    pkg.depends = _getsection(fd)
+                elif line == "%OPTDEPENDS%":
+                    pkg.optdepends = _getsection(fd)
+                elif line == "%CONFLICTS%":
+                    pkg.conflicts = _getsection(fd)
+                elif line == "%PROVIDES%":
+                    pkg.provides = _getsection(fd)
         # files
         filename = os.path.join(path, "files")
         if not os.path.isfile(filename):
-            tap.bail("invalid db entry found (files missing) for pkg " + pkgname)
+            tap.bail(f"invalid db entry found (files missing) for pkg {pkgname}")
             return None
-        fd = open(filename, "r")
-        while 1:
-            line = fd.readline()
-            if not line:
-                break
-            line = line.strip("\n")
-            if line == "%FILES%":
-                while line:
-                    line = fd.readline().strip("\n")
-                    if line:
-                        pkg.files.append(line)
-            if line == "%BACKUP%":
-                pkg.backup = _getsection(fd)
-        fd.close()
-
+        with open(filename, "r") as fd:
+            while 1:
+                line = fd.readline()
+                if not line:
+                    break
+                line = line.strip("\n")
+                if line == "%FILES%":
+                    while line:
+                        line = fd.readline().strip("\n")
+                        if line:
+                            pkg.files.append(line)
+                if line == "%BACKUP%":
+                    pkg.backup = _getsection(fd)
         # install
         filename = os.path.join(path, "install")
 
@@ -187,7 +187,6 @@ class pmdb(object):
     # db_write is used to add both 'local' and 'sync' db entries
     #
     def db_write(self, pkg):
-        entry = {}
         # desc/depends type entries
         data = []
         make_section(data, "NAME", pkg.name)
@@ -215,8 +214,7 @@ class pmdb(object):
             make_section(data, "MD5SUM", pkg.md5sum)
             make_section(data, "PGPSIG", pkg.pgpsig)
 
-        entry["desc"] = "\n".join(data)
-
+        entry = {"desc": "\n".join(data)}
         # files and install
         if self.is_local:
             data = []

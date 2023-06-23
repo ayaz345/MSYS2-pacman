@@ -37,7 +37,7 @@ p = pmpkg("git", "1.7.6-1")
 p.depends = ["curl", "expat", "perl"]
 
 self.addpkg(p)
-self.args = "-U --recursive %s" % p.filename()
+self.args = f"-U --recursive {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_DEPENDS=git|curl")

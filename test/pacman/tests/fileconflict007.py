@@ -10,7 +10,7 @@ p = pmpkg("pkg", "1.0-2")
 p.files = ["dir/symdir/file"]
 self.addpkg(p)
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_EXIST=pkg")

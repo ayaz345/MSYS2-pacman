@@ -51,7 +51,7 @@ class pmenv(object):
         """
         """
         if not os.path.isfile(testcase):
-            raise IOError("test file %s not found" % testcase)
+            raise IOError(f"test file {testcase} not found")
         self.testcases.append(testcase)
 
     def run(self):
@@ -60,7 +60,7 @@ class pmenv(object):
         tap.plan(len(self.testcases))
         for testcase in self.testcases:
             t = pmtest.pmtest(testcase, self.root)
-            tap.diag("Running '%s'" % t.testname)
+            tap.diag(f"Running '{t.testname}'")
 
             t.load()
             t.generate(self.pacman)

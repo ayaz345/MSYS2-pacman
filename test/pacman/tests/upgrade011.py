@@ -10,7 +10,7 @@ self.addpkg2db("local", lp)
 
 self.filesystem = ["usr/share/file"]
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=1")
 self.addrule("PKG_VERSION=dummy|1.0-1")

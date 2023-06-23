@@ -12,7 +12,7 @@ sp1.conflicts = ["foo"]
 sp1.files = ["usr/", "usr/lib/", "usr/lib/file"]
 self.addpkg2db("sync", sp1)
 
-self.args = "-S %s --ask=4" % sp1.name
+self.args = f"-S {sp1.name} --ask=4"
 
 self.addrule("PACMAN_RETCODE=1")
 self.addrule("PKG_EXIST=foo")

@@ -20,7 +20,7 @@ lp3.files = ["etc/brokenlink3 -> nonexistent3",
             "etc/exists3"]
 self.addpkg2db("local", lp3)
 
-self.args = "-R %s %s" % (lp.name, lp2.name)
+self.args = f"-R {lp.name} {lp2.name}"
 #self.args = "-R"
 
 self.addrule("PACMAN_RETCODE=0")

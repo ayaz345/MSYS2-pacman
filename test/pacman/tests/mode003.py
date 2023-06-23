@@ -10,7 +10,7 @@ p.files = ["etc/profile|666**"]
 p.backup = ["etc/profile"]
 self.addpkg(p)
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("!FILE_PACSAVE=etc/profile")

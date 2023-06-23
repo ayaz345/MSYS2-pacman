@@ -8,7 +8,7 @@ p = pmpkg("dummy", "1.1-1")
 p.files = ["usr/share/file_%d" % n for n in range(600, 1000)]
 self.addpkg(p)
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_VERSION=dummy|1.1-1")

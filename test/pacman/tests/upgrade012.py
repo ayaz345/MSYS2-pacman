@@ -6,7 +6,7 @@ self.addpkg(p)
 
 self.filesystem = ["bin/dummy"]
 
-self.args = "-U --force %s" % p.filename()
+self.args = f"-U --force {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_EXIST=dummy")

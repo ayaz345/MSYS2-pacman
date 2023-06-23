@@ -11,7 +11,7 @@ sp2 = pmpkg("bar", "1.0-2")
 sp2.files = ["foo/b*r"]
 self.addpkg(sp2)
 
-self.args = "-U %s %s" % (sp1.filename(), sp2.filename())
+self.args = f"-U {sp1.filename()} {sp2.filename()}"
 
 self.addrule("PKG_VERSION=foo|1.0-2")
 self.addrule("PKG_VERSION=bar|1.0-2")

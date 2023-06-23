@@ -4,7 +4,7 @@ p = pmpkg("foo")
 p.files = ["usr/share/file_%d" % n for n in range(1000)]
 self.addpkg2db("local", p)
 
-self.args = "-R %s" % p.name
+self.args = f"-R {p.name}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("!PKG_EXIST=foo")

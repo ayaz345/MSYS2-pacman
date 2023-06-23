@@ -15,11 +15,11 @@ p.files = ["bin/dummy",
            "usr/man/man1/dummy.1"]
 self.addpkg(p)
 
-self.args = "-U --dbonly %s" % p.filename()
+self.args = f"-U --dbonly {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_EXIST=dummy")
 self.addrule("PKG_VERSION=dummy|2.0-1")
 for f in lp.files:
-	self.addrule("FILE_EXIST=%s" % f)
+	self.addrule(f"FILE_EXIST={f}")
 self.addrule("!FILE_EXIST=bin/dummy2")

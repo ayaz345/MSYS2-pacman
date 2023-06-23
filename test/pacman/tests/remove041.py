@@ -12,7 +12,7 @@ lp3 = pmpkg("pkg3")
 lp3.depends = ["imaginary"]
 self.addpkg2db("local", lp3)
 
-self.args = "-R %s" % lp1.name
+self.args = f"-R {lp1.name}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("!PKG_EXIST=pkg1")

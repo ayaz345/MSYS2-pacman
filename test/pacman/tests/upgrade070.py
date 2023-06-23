@@ -7,7 +7,7 @@ self.addpkg(p)
 
 self.option["NoExtract"] = ["usr/man/man1/dummy.1"]
 
-self.args = "-U %s" % p.filename()
+self.args = f"-U {p.filename()}"
 
 self.addrule("PACMAN_RETCODE=0")
 self.addrule("PKG_EXIST=dummy")

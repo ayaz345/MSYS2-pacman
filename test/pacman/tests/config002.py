@@ -7,6 +7,6 @@ self.addpkg2db("sync", sp)
 
 self.db['sync'].option['Include'] = ['/dev/null']
 
-self.args = "-Si %s" % sp.name
+self.args = f"-Si {sp.name}"
 
 self.addrule("PACMAN_RETCODE=0")

@@ -11,7 +11,7 @@ sp2 = pmpkg("bar")
 sp2.files = ["usr/", "usr/lib/", "usr/lib/file"]
 self.addpkg2db("sync", sp2)
 
-self.args = "-S %s %s" % (sp1.name, sp2.name)
+self.args = f"-S {sp1.name} {sp2.name}"
 
 self.addrule("PACMAN_RETCODE=1")
 self.addrule("!PKG_EXIST=foo")

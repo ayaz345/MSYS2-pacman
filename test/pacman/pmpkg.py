@@ -66,11 +66,15 @@ class pmpkg(object):
         self.finalized = False
 
     def __str__(self):
-        s = ["%s" % self.fullname()]
-        s.append("description: %s" % self.desc)
-        s.append("url: %s" % self.url)
-        s.append("files: %s" % " ".join(self.files))
-        s.append("reason: %d" % self.reason)
+        s = [f"{self.fullname()}"]
+        s.extend(
+            (
+                f"description: {self.desc}",
+                f"url: {self.url}",
+                f'files: {" ".join(self.files)}',
+                "reason: %d" % self.reason,
+            )
+        )
         return "\n".join(s)
 
     def fullname(self):
@@ -78,14 +82,14 @@ class pmpkg(object):
 
         Returns a string formatted as follows: "pkgname-pkgver".
         """
-        return "%s-%s" % (self.name, self.version)
+        return f"{self.name}-{self.version}"
 
     def filename(self):
         """File name of a package, including its extension.
 
         Returns a string formatted as follows: "pkgname-pkgver.PKG_EXT_PKG".
         """
-        return "%s%s" % (self.fullname(), util.PM_EXT_PKG)
+        return f"{self.fullname()}{util.PM_EXT_PKG}"
 
     @staticmethod
     def parse_filename(name):
@@ -104,36 +108,27 @@ class pmpkg(object):
         A package archive is generated in the location 'path', based on the data
         from the object.
         """
-        archive_files = []
-
         # .PKGINFO
-        data = ["pkgname = %s" % self.name]
-        data.append("pkgver = %s" % self.version)
-        data.append("pkgdesc = %s" % self.desc)
-        data.append("url = %s" % self.url)
-        data.append("builddate = %s" % self.builddate)
-        data.append("packager = %s" % self.packager)
-        data.append("size = %s" % self.size)
+        data = [
+            f"pkgname = {self.name}",
+            f"pkgver = {self.version}",
+            f"pkgdesc = {self.desc}",
+            f"url = {self.url}",
+            f"builddate = {self.builddate}",
+            f"packager = {self.packager}",
+            f"size = {self.size}",
+        ]
         if self.arch:
-            data.append("arch = %s" % self.arch)
-        for i in self.license:
-            data.append("license = %s" % i)
-        for i in self.replaces:
-            data.append("replaces = %s" % i)
-        for i in self.groups:
-            data.append("group = %s" % i)
-        for i in self.depends:
-            data.append("depend = %s" % i)
-        for i in self.optdepends:
-            data.append("optdepend = %s" % i)
-        for i in self.conflicts:
-            data.append("conflict = %s" % i)
-        for i in self.provides:
-            data.append("provides = %s" % i)
-        for i in self.backup:
-            data.append("backup = %s" % i)
-        archive_files.append((".PKGINFO", "\n".join(data)))
-
+            data.append(f"arch = {self.arch}")
+        data.extend(f"license = {i}" for i in self.license)
+        data.extend(f"replaces = {i}" for i in self.replaces)
+        data.extend(f"group = {i}" for i in self.groups)
+        data.extend(f"depend = {i}" for i in self.depends)
+        data.extend(f"optdepend = {i}" for i in self.optdepends)
+        data.extend(f"conflict = {i}" for i in self.conflicts)
+        data.extend(f"provides = {i}" for i in self.provides)
+        data.extend(f"backup = {i}" for i in self.backup)
+        archive_files = [(".PKGINFO", "\n".join(data))]
         # .INSTALL
         if any(self.install.values()):
             archive_files.append((".INSTALL", self.installfile()))
@@ -193,19 +188,19 @@ class pmpkg(object):
         file_names = self.filelist()
         for name in list(file_names):
             if os.path.isabs(name):
-                raise ValueError("Absolute path in filelist '%s'." % name)
+                raise ValueError(f"Absolute path in filelist '{name}'.")
 
             name = os.path.dirname(name.rstrip("/"))
             while name:
                 if name in file_names:
                     # path exists as both a file and a directory
-                    raise ValueError("Duplicate path in filelist '%s'." % name)
-                elif name + "/" in file_names:
+                    raise ValueError(f"Duplicate path in filelist '{name}'.")
+                elif f"{name}/" in file_names:
                     # path was either manually included or already processed
                     break
                 else:
-                    file_names.append(name + "/")
-                    self.files.append(name + "/")
+                    file_names.append(f"{name}/")
+                    self.files.append(f"{name}/")
                 name = os.path.dirname(name)
         self.files.sort()
 
@@ -215,11 +210,11 @@ class pmpkg(object):
         return ["%s\t%s" % (self.parse_filename(i), util.mkmd5sum(i)) for i in self.backup]
 
     def installfile(self):
-        data = []
-        for key, value in self.install.items():
-            if value:
-                data.append("%s() {\n%s\n}\n" % (key, value))
-
+        data = [
+            "%s() {\n%s\n}\n" % (key, value)
+            for key, value in self.install.items()
+            if value
+        ]
         return "\n".join(data)
 
 # vim: set ts=4 sw=4 et:
